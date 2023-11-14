@@ -10,10 +10,19 @@ public class DiaPronostico {
 
     
     
-    public DiaPronostico(String fechaPronostico, String estadoClima, String tempMinima, String tempMaxima) {
+	public void setFechaPronostico(String fechaPronostico) {
 		this.fechaPronostico = fechaPronostico;
+	}
+
+	public void setEstadoClima(String estadoClima) {
 		this.estadoClima = estadoClima;
+	}
+
+	public void setTempMinima(String tempMinima) {
 		this.tempMinima = tempMinima;
+	}
+
+	public void setTempMaxima(String tempMaxima) {
 		this.tempMaxima = tempMaxima;
 	}
 
@@ -33,5 +42,5 @@ public class DiaPronostico {
     public String getTempMaxima() {
         return tempMaxima;
     }
-
+    
 }
