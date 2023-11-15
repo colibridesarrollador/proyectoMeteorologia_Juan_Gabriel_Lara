@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
+
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,7 +58,7 @@ public class PeticionesJSON {
 		String idCiudad = mapeoCiudades.get(nombreCiudad);
 
 		if (idCiudad == null) {
-			System.out.println("No se encontró el identificador de la ciudad para el nombre proporcionado.");
+			System.out.println("No se encontró el identificador de la ciudad para el nombre proporcionado: "+nombreCiudad);
 			return null;
 		}
 
@@ -72,11 +72,7 @@ public class PeticionesJSON {
 			// Obtener información de la ciudad
 			String ciudad = jsonNode.path("city").path("cityName").asText();
 			pronostico.setNombreCiudad(ciudad);
-			// String zonaHoraria = jsonNode.path("city").path("timeZone").asText();
-
-			System.out.println("Ciudad: " + pronostico.getNombreCiudad());
-			// System.out.println("Zona horaria: " + zonaHoraria);
-
+			
 			// Obtener el nodo "forecastDay" que contiene el pronóstico para varios días
 			JsonNode forecastDays = jsonNode.path("city").path("forecast").path("forecastDay");
 
@@ -101,7 +97,6 @@ public class PeticionesJSON {
 				System.out.println("Temperatura Máxima: " + dia.getTempMaxima());
 				*/
 			}
-			//System.out.println(pronostico.getDias().toString());
 			return pronostico;
 		} catch (Exception e) {
 			System.err.println("Problemas en el método procesarDatos de la clase PeticionesJSON");
