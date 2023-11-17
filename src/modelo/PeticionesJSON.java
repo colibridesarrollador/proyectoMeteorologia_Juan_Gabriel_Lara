@@ -31,9 +31,7 @@ public class PeticionesJSON {
 
 	private void LeerProperties() {
 		this.properties = new Properties();
-		try (InputStreamReader reader = new InputStreamReader(
-				PeticionesJSON.class.getClassLoader().getResourceAsStream("resources/config.properties"),
-				StandardCharsets.UTF_8)) {
+		try (InputStreamReader reader = new InputStreamReader(PeticionesJSON.class.getClassLoader().getResourceAsStream("resources/config.properties"),StandardCharsets.UTF_8)) {
 			properties.load(reader);
 		} catch (IOException e) {
 			System.err.println("Error al cargar el archivo de propiedades: " + e.getMessage());
@@ -77,9 +75,9 @@ public class PeticionesJSON {
 			JsonNode forecastDays = jsonNode.path("city").path("forecast").path("forecastDay");
 
 			// Iterar sobre los próximos 4 días
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < 5; i++) {
 				JsonNode diaPronostico = forecastDays.get(i);
-
+				
 				dia.setFechaPronostico(diaPronostico.path("forecastDate").asText());
 
 				dia.setEstadoClima(diaPronostico.path("weather").asText());

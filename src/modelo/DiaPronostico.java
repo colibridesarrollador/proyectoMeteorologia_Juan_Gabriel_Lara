@@ -1,5 +1,7 @@
 package modelo;
 
+import javax.swing.JLabel;
+
 public class DiaPronostico {
 
    
@@ -7,6 +9,8 @@ public class DiaPronostico {
     private String estadoClima;
     private String tempMinima;
     private String tempMaxima;
+    private JLabel labels;
+    private String peticionesClima;
 
     
     
@@ -42,5 +46,13 @@ public class DiaPronostico {
     public String getTempMaxima() {
         return tempMaxima;
     }
+
+	public JLabel getLabels() {
+		return labels;
+	}
+
+	public void setLabels(JLabel labels) {
+		this.labels = labels;
+	}
     
 }
