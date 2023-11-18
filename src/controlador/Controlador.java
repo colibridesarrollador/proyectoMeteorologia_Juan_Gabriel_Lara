@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,8 +25,8 @@ import modelo.Pronostico;
 public class Controlador implements ActionListener {
 
 	// private ImageIcon fondoEspania;
-	private Map<String, String> ciudadesNombres;
-	private DefaultComboBoxModel<String> ciudades;
+	private List<String> ciudades;
+	private DefaultComboBoxModel<String> comunidades;
 	private DefaultComboBoxModel<String> dias;
 	private Vista vista;
 	private Pronostico pronostico;
@@ -34,7 +35,8 @@ public class Controlador implements ActionListener {
 	private String[] diasSemanaYNumero;
 	private int diaSeleccionado;
 	private List<String> ciudadesPeticiones;
-	private List<String> provincias;
+	private List<String> comunidadesLista;
+	private String comunidad;
 
 	public Controlador(Vista vista) {
 
@@ -42,138 +44,146 @@ public class Controlador implements ActionListener {
 
 		this.pronostico = new Pronostico();
 		this.respuesta = new PeticionesJSON();
-		this.ciudadesNombres = new HashMap<>();
-		this.ciudadesNombres = nombresCiudad();
+		this.ciudades = new ArrayList<String>();
+		this.ciudades = cargarCiudades();
 		this.ciudadesPeticiones = new ArrayList<>();
-		this.provincias = new ArrayList<String>();
-		this.ciudades = new DefaultComboBoxModel<>(ciudadesNombres.keySet().toArray(new String[0]));
+		this.comunidadesLista = comunidades();
+		this.comunidades = new DefaultComboBoxModel<>(comunidadesLista.toArray(new String[0]));
 		diasSemanaYNumero = new String[5];
 		this.fechaActual = LocalDate.now();
 
 		obtenerDias();
-		cargarCiudades();
-		
-		//cargarProvincias();
+		// cargarCiudades();
+
+		// cargarProvincias();
 
 		this.dias = new DefaultComboBoxModel<>(diasSemanaYNumero);
-		vista.getComboBoxCiudades().setModel(ciudades);
+
+		cargarJCombobox();
+		cargarActionListener();
+	}
+
+	private void cargarJCombobox() {
+		vista.getComboBoxComunidades().setModel(comunidades);
 		vista.getComboBoxDia().setModel(dias);
+
+	}
+
+	private void cargarActionListener() {
 		vista.getIrAlMapa().addActionListener(this);
-		vista.getComboBoxCiudades().addActionListener(this);
+		vista.getComboBoxComunidades().addActionListener(this);
 		vista.getComboBoxDia().addActionListener(this);
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource() == vista.getIrAlMapa()) {
-			vista.getPanelInicio().setVisible(false);
-			vista.getPanelEspania().setVisible(true);
 
-			diaSeleccionado = vista.getComboBoxDia().getSelectedIndex();
-
-			mapaEspania(0);
+			mostrarMapaEspaniaPrimeraVez();
 			
-			mapaEspania(diaSeleccionado);
-
 		} else if (e.getSource() == vista.getComboBoxDia()) {
+		
+			if(vista.getPanelEspania().isVisible()) {
+				peticionDatosEspania(vista.getComboBoxDia().getSelectedIndex());
+				refrescarPanel(vista.getPanelEspania());
+			}else {
+				diaSeleccionado = vista.getComboBoxDia().getSelectedIndex();				
+				cargarDatosEnJLabel(diaSeleccionado, comunidad);
+			}
+			 
+			 
+			 
+		} else if (e.getSource() == vista.getComboBoxComunidades()) {
 
-			diaSeleccionado = vista.getComboBoxDia().getSelectedIndex();
-
-			System.out.println(diaSeleccionado);
-
-			mapaEspania(diaSeleccionado);
-
-			// vista.mostrarMapaEspania();
-
-			vista.refrescarEpania();
-
-		}/* else if (e.getSource() == vista.getComboBoxCiudades()) {
-
-			vista.getPanelEspania().setVisible(false);
-			vista.getPanelProvincias().setVisible(true);
-
-			diaSeleccionado = vista.getComboBoxDia().getSelectedIndex();
-
-			String provincia = (String) vista.getComboBoxCiudades().getSelectedItem();
-
-			String valor = devolverValor(provincia);
-			
-			pintarIconos(diaSeleccionado, valor);
-
-			vista.getLblNewLabelProvinciaSeleccionada().setText(pronostico.getNombreCiudad());
-
+			comunidad = (String) vista.getComboBoxComunidades().getSelectedItem();
 			
 
-		}*/
+			//diaSeleccionado = vista.getComboBoxDia().getSelectedIndex();
+			
+			if (comunidad.equalsIgnoreCase("PAIS: España")) {
 
-		/*
-		 * try { pronostico =
-		 * respuesta.procesarInformacionClimatologica(ciudadesNombres.get(ciudad)); }
-		 * catch (Exception f) { f.printStackTrace(); }
-		 */
+				mostrarPanelEspania();
+				mostrarDatosEspania();
 
-	}
+			} else {
+				
+				if(vista.getPanelEspania().isVisible())
+					vista.getPanelEspania().setVisible(false);
+				
+				cargarDatosEnJLabel(diaSeleccionado, comunidad);
+				
+			}
 
-	private void introducirTemperaturas() {
-
-		
-		
-	}
-/*
-	public void pintarIconos(int dia, String llamada) {
-
-		try {
-			pronostico = respuesta.procesarInformacionClimatologica(ciudadesNombres.get(llamada));
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+	}
+
+	public void refrescarPanel(JPanel panel) {
+		panel.validate();
+		panel.repaint();
+	}
+
+	private void mostrarPanelEspania() {
+		vista.getPanelEspania().setVisible(true);
+
+	}
+	private void mostrarDatosEspania() {
+		peticionDatosEspania(diaSeleccionado);
+	}
 	
-		String minimas = pronostico.getDias().get(dia).getTempMinima();
-		String maximas = pronostico.getDias().get(dia).getTempMaxima();
-		String clima = pronostico.getDias().get(dia).getEstadoClima();
-		
-		
-		int posicion  = vista.getContenedor().getListas().indexOf(llamada);
-		int longitud = vista.getContenedor().getListas().get(posicion).getEetiquetas().size();
-		
-		for (int i = 0; i < diasSemanaYNumero.length; i++) {
-			if(vista.getContenedor().getListas().get(posicion).getEetiquetas().get(i).getText().equalsIgnoreCase(llamada)) {
-				comprobarClima(vista.getContenedor().getListas().get(posicion).getEetiquetas().get(i),clima);
-			}else if(vista.getContenedor().getListas().get(posicion).getEetiquetas().get(i).getText().equalsIgnoreCase("min")) {
-				vista.getContenedor().getListas().get(posicion).getEetiquetas().get(i).setText(minimas);
-			}else if(vista.getContenedor().getListas().get(posicion).getEetiquetas().get(i).getText().equalsIgnoreCase("max")) {
-					vista.getContenedor().getListas().get(posicion).getEetiquetas().get(i).setText(minimas);
-			}
-		}
-		vista.mostrarProvincia(vista.getContenedor().getListas().get(posicion).getEetiquetas());
+	private void mostrarMapaEspaniaPrimeraVez() {
+		vista.getPanelControles().setVisible(true);
+		vista.getPanelInicio().setVisible(false);
+		vista.getPanelControles().setVisible(true);
+		vista.getPanelEspania().setVisible(true);
+		diaSeleccionado = vista.getComboBoxDia().getSelectedIndex();
+		peticionDatosEspania(diaSeleccionado);
 	}
-*/
+
+	/*
+	 * private void introducirTemperaturas() {
+	 * 
+	 * }
+	 */
+	public void cargarDatosEnJLabel(int dia, String llamada) {
+			if(comunidad.equals("Galicia")) {
+		
+					if(!vista.getPanelGalicia().isVisible())
+						vista.getPanelGalicia().setVisible(true);
+						mostrarGalicia(dia);
+			
+			}else if(comunidad.equals("País Vasco")) {
+					
+					if(!vista.getPanelGalicia().isVisible())
+						vista.getPanelGalicia().setVisible(true);
+						mostrarGalicia(dia);
+			}
+		
+	}
+
+	
+
 	// METODO PARA MOSTRA MAPA
-	public void mapaEspania(int dia) {
+	public void peticionDatosEspania(int dia) {
 
-		String nombreCiudad = null;
-		for (Map.Entry<String, String> var : nombresCiudad().entrySet()) {
-
-			try {
-				if (!var.getValue().equals("")) {
-					pronostico = respuesta.procesarInformacionClimatologica(var.getValue());
-
-					for (int i = 0; i < vista.getLabels().size(); i++) {
-						nombreCiudad = vista.getLabels().get(i).getText();
-						if (var.getValue().equalsIgnoreCase(nombreCiudad)) {
-							String clima = pronostico.getDias().get(dia).getEstadoClima();
-
-							comprobarClima(vista.getLabels().get(i), clima);
-						}
+		String nombreEtiqueta = null;
+		try {
+			for (String string : ciudades) {
+				pronostico = respuesta.hacerPeticion(string);
+				for (int i = 0; i < vista.getLabels().size(); i++) {
+					nombreEtiqueta = vista.getLabels().get(i).getText();
+					if (string.equalsIgnoreCase(nombreEtiqueta)) {
+						String clima = pronostico.getDias().get(dia).getEstadoClima();
+						comprobarClima(vista.getLabels().get(i), clima);
 					}
-
 				}
-			} catch (Exception e) {
-				System.err.println("Error al hacer peticion en el método mapaEspania");
-				e.printStackTrace();
+
 			}
 
+		} catch (Exception e) {
+			System.err.println("Error al hacer peticion en el método mapaEspania");
+			e.printStackTrace();
 		}
 
 	}
@@ -189,69 +199,95 @@ public class Controlador implements ActionListener {
 		}
 	}
 
-	public Map<String, String> nombresCiudad() {
+	public List<String> cargarCiudades() {
 
-		Map<String, String> ciudadesNombre = new HashMap<>();
+		List<String> ciudadesNombre = new ArrayList<String>();
 
-		ciudadesNombre.put("A Coruña", "A_Coruja");
-		ciudadesNombre.put("Albacete", "Albacete");
-		ciudadesNombre.put("Alicante Alacant", "Alicante_Alacant");
-		ciudadesNombre.put("Almería", "Almeria");
-		ciudadesNombre.put("Badajoz", "Badajoz");
-		ciudadesNombre.put("Barcelona", "Barcelona");
-		ciudadesNombre.put("Bilbao", "Bilbao");
-		ciudadesNombre.put("Burgos", "Burgos");
-		ciudadesNombre.put("Cáceres", "Caceres");
-		ciudadesNombre.put("España", "");
-		ciudadesNombre.put("Cádiz", "Cadiz");
-		ciudadesNombre.put("Ciudad Real", "Ciudad_Real");
-		ciudadesNombre.put("Córdoba", "Cordoba");
-		ciudadesNombre.put("Cuenca", "Cuenca");
-		ciudadesNombre.put("Guadalajara", "Guadalajara");
-		ciudadesNombre.put("Huelva", "Huelva");
-		ciudadesNombre.put("Huesca", "Huesca");
-		ciudadesNombre.put("Jaén", "Jaen");
-		ciudadesNombre.put("Las Palmas de Gran Canaria", "Las_Palmas_de_Gran_Canaria");
-		ciudadesNombre.put("León", "Leon");
-		ciudadesNombre.put("Lleida", "Lleida");
-		ciudadesNombre.put("Logroño", "Logrono");
-		ciudadesNombre.put("Lugo", "Lugo");
-		ciudadesNombre.put("Madrid", "Madrid");
-		ciudadesNombre.put("Málaga", "Malaga");
-		ciudadesNombre.put("Murcia", "Murcia");
-		ciudadesNombre.put("Ourense", "Ourense");
-		ciudadesNombre.put("Oviedo", "Oviedo");
-		ciudadesNombre.put("Palencia", "Palencia");
-		ciudadesNombre.put("Palma de Mallorca", "Palma_de_Mallorca");
-		ciudadesNombre.put("Pamplona Iruña", "Pamplona_Iruna");
-		ciudadesNombre.put("Salamanca", "Salamanca");
-		ciudadesNombre.put("Santa Cruz de Tenerife", "Santa_Cruz_de_Tenerife");
-		ciudadesNombre.put("Santander", "Santander");
-		ciudadesNombre.put("Segovia", "Segovia");
-		ciudadesNombre.put("Sevilla", "Sevilla");
-		ciudadesNombre.put("Soria", "Soria");
-		ciudadesNombre.put("Tarragona", "Tarragona");
-		ciudadesNombre.put("Teruel", "Teruel");
-		ciudadesNombre.put("Toledo", "Toledo");
-		ciudadesNombre.put("Valencia", "Valencia");
-		ciudadesNombre.put("Valladolid", "Valladolid");
-		ciudadesNombre.put("Zamora", "Zamora");
-		ciudadesNombre.put("Zaragoza", "Zaragoza");
-		ciudadesNombre.put("Cádiz", "Cadiz");
-		ciudadesNombre.put("Pontevedra", "Pontevedra");
-		ciudadesNombre.put("Vitoria Gasteiz", "Vitoria-Gasteiz");
-		ciudadesNombre.put("Avila", "Avila");
-		ciudadesNombre.put("Girona", "Girona");
-		ciudadesNombre.put("Castellón de la Plana", "Castellon_de_la_Plana_Castello_de_la_Plana");
-		ciudadesNombre.put("Granada", "Granada");
-		ciudadesNombre.put("Alava", "Vitoria-Gasteiz");
+		ciudadesNombre.add("A_Coruja");
+		ciudadesNombre.add("Albacete");
+		ciudadesNombre.add("Alicante_Alacant");
+		ciudadesNombre.add("Vitoria-Gasteiz");
+		ciudadesNombre.add("Almeria");
+		ciudadesNombre.add("Badajoz");
+		ciudadesNombre.add("Barcelona");
+		ciudadesNombre.add("Bilbao");
+		ciudadesNombre.add("Burgos");
+		ciudadesNombre.add("Caceres");
+		ciudadesNombre.add("Cadiz");
+		ciudadesNombre.add("Ciudad_Real");
+		ciudadesNombre.add("Cordoba");
+		ciudadesNombre.add("Cuenca");
+		ciudadesNombre.add("Guadalajara");
+		ciudadesNombre.add("Huelva");
+		ciudadesNombre.add("Huesca");
+		ciudadesNombre.add("Jaen");
+		ciudadesNombre.add("Las_Palmas_de_Gran_Canaria");
+		ciudadesNombre.add("Leon");
+		ciudadesNombre.add("Lleida");
+		ciudadesNombre.add("Logrono");
+		ciudadesNombre.add("Lugo");
+		ciudadesNombre.add("Madrid");
+		ciudadesNombre.add("Malaga");
+		ciudadesNombre.add("Murcia");
+		ciudadesNombre.add("Ourense");
+		ciudadesNombre.add("Oviedo");
+		ciudadesNombre.add("Palencia");
+		ciudadesNombre.add("Palma_de_Mallorca");
+		ciudadesNombre.add("Pamplona_Iruna");
+		ciudadesNombre.add("Salamanca");
+		ciudadesNombre.add("Santa_Cruz_de_Tenerife");
+		ciudadesNombre.add("Santander");
+		ciudadesNombre.add("Segovia");
+		ciudadesNombre.add("Sevilla");
+		ciudadesNombre.add("Soria");
+		ciudadesNombre.add("Tarragona");
+		ciudadesNombre.add("Teruel");
+		ciudadesNombre.add("Toledo");
+		ciudadesNombre.add("Valencia");
+		ciudadesNombre.add("Valladolid");
+		ciudadesNombre.add("Zamora");
+		ciudadesNombre.add("Zaragoza");
+		ciudadesNombre.add("Cadiz");
+		ciudadesNombre.add("Pontevedra");
+		ciudadesNombre.add("Vitoria-Gasteiz");
+		ciudadesNombre.add("Avila");
+		ciudadesNombre.add("Girona");
+		ciudadesNombre.add("Castellon_de_la_Plana_Castello_de_la_Plana");
+		ciudadesNombre.add("Granada");
 
 		return ciudadesNombre;
+	}
+
+	public List<String> comunidades() {
+
+		List<String> comunidades = new ArrayList<String>();
+		comunidades.add("Galicia");
+		comunidades.add("Asturias");
+		comunidades.add("Cantabria");
+		comunidades.add("Castlla y León");
+		comunidades.add("País Vasco");
+		comunidades.add("Navarra");
+		comunidades.add("La Rioja");
+		comunidades.add("Aragón");
+		comunidades.add("Cataluña");
+		comunidades.add("Comunidad Valenciana");
+		comunidades.add("Castilla La Mancha");
+		comunidades.add("Región de Murcia");
+		comunidades.add("Andalucía");
+		comunidades.add("Extremadura");
+		comunidades.add("Madrid");
+		comunidades.add("Islas Baleares");
+		comunidades.add("Islas Canarias");
+		comunidades.add("Ceuta");
+		comunidades.add("Melilla");
+		comunidades.add("PAIS: España");
+		return comunidades;
 	}
 
 	private void comprobarClima(JLabel label, String clima) {
 
 		ImageIcon icono = null;
+		// System.out.println("ENTRA");
 
 		// Obtén la hora actual del sistema
 		LocalTime horaActual = LocalTime.now();
@@ -261,6 +297,8 @@ public class Controlador implements ActionListener {
 		LocalTime puestaSol = LocalTime.of(20, 0);
 		// SOLES CON NUVES
 		// SOLES CON NUVES
+		System.out.println("Procesando...");
+		// System.out.println("ENTRA");
 		if (clima.equalsIgnoreCase("intervalos de sol") || clima.equalsIgnoreCase("sin lluvia")
 				|| clima.equalsIgnoreCase("despejado") || clima.equalsIgnoreCase("periodos de sol")
 				|| clima.equalsIgnoreCase("parcialmente nuboso") || clima.equalsIgnoreCase("parcialmente despejado,")
@@ -368,7 +406,6 @@ public class Controlador implements ActionListener {
 				label.setIcon(icono);
 			} else {
 				;
-				System.out.println("Procesando...");
 				label.setOpaque(false);
 				icono = new ImageIcon(getClass().getResource("/imagenes/luna.png").getPath());
 				icono.setImage(
@@ -385,21 +422,46 @@ public class Controlador implements ActionListener {
 			label.setIcon(icono);
 		}
 	}
+	private void mostrarGalicia(int dia) {
 
-	public void cargarCiudades() {
+		pronostico = respuesta.hacerPeticion(vista.getOurense().getText());
+		
+		String maxima = pronostico.getDias().get(dia).getTempMaxima();
+		String minima = pronostico.getDias().get(dia).getTempMinima();
+		String clima = pronostico.getDias().get(dia).getEstadoClima();	
+		
+		vista.getMinOurense().setText("MIN: "+minima+"º");
+		vista.getMaxOurense().setText("MAX: "+maxima+"º");
+		comprobarClima(vista.getOurense(),clima);
+		pronostico = respuesta.hacerPeticion(vista.getLugo().getText());
+		
+		 maxima = pronostico.getDias().get(dia).getTempMaxima();
+		 minima = pronostico.getDias().get(dia).getTempMinima();
+		 clima = pronostico.getDias().get(dia).getEstadoClima();	
+		
+		vista.getMinLugo().setText("MIN: "+minima+"º");
+		vista.getMaxLugo().setText("MAX: "+maxima+"º");
+		comprobarClima(vista.getLugo(),clima);
+		
+		
+		pronostico = respuesta.hacerPeticion(vista.getPontevedra().getText());
+		
+		maxima = pronostico.getDias().get(dia).getTempMaxima();
+		minima = pronostico.getDias().get(dia).getTempMinima();
+		clima = pronostico.getDias().get(dia).getEstadoClima();	
+		
+		vista.getMinPontevedra().setText("MIN: "+minima+"º");
+		vista.getMaxPontevedra().setText("MAX: "+maxima+"º");
+		comprobarClima(vista.getPontevedra(),clima);
+		pronostico = respuesta.hacerPeticion(vista.getCorunia().getText());
+		
+		maxima = pronostico.getDias().get(dia).getTempMaxima();
+		minima = pronostico.getDias().get(dia).getTempMinima();
+		clima = pronostico.getDias().get(dia).getEstadoClima();	
+		
+		vista.getMinCorunia().setText("MIN: "+minima+"º");
+		vista.getMaxCorunia().setText("MAX: "+maxima+"º");
+		comprobarClima(vista.getCorunia(),clima);// TODO Auto-generated method stub
 
-		ciudadesPeticiones.add("Donostia_San_Sebastian");
-		ciudadesPeticiones.add("Pamplona_Iruna");
-		ciudadesPeticiones.add("Vitoria-Gasteiz");
-		ciudadesPeticiones.add("Bilbao");
-
-	}
-
-	private void cargarProvincias() {
-		provincias.add("avila");
-
-	}
-	public String devolverValor(String clave) {
-		return ciudadesNombres.get(clave);
 	}
 }

@@ -38,6 +38,7 @@ public class PeticionesJSON {
 			System.exit(1);
 		}
 	}
+	
 
 	private Map<String, String> cargarMapeoDesdeProperties() {
 		Map<String, String> mapeo = new HashMap<>();
@@ -48,7 +49,7 @@ public class PeticionesJSON {
 		return mapeo;
 	}
 
-	public Pronostico procesarInformacionClimatologica(String nombreCiudad) throws Exception {
+	public Pronostico hacerPeticion(String nombreCiudad)  {
 
 		DiaPronostico dia = new DiaPronostico();
 		Pronostico pronostico = new Pronostico();
@@ -75,30 +76,35 @@ public class PeticionesJSON {
 			JsonNode forecastDays = jsonNode.path("city").path("forecast").path("forecastDay");
 
 			// Iterar sobre los próximos 4 días
-			for (int i = 0; i < 5; i++) {
+			
+			for(int i = 0; i < 4; i++) {
+				
 				JsonNode diaPronostico = forecastDays.get(i);
+				//System.out.println(nombreCiudad);
 				
-				dia.setFechaPronostico(diaPronostico.path("forecastDate").asText());
+					dia.setFechaPronostico(diaPronostico.path("forecastDate").asText());
 
-				dia.setEstadoClima(diaPronostico.path("weather").asText());
+					dia.setEstadoClima(diaPronostico.path("weather").asText());
 
-				dia.setTempMinima(diaPronostico.path("minTemp").asText());
+					dia.setTempMinima(diaPronostico.path("minTemp").asText());
 
-				dia.setTempMaxima(diaPronostico.path("maxTemp").asText());
+					dia.setTempMaxima(diaPronostico.path("maxTemp").asText());
 
-				pronostico.getDias().add(dia);
-				
+					pronostico.getDias().add(dia);
+					
+					
+				}
 				/*
 				System.out.println("Fecha: " + dia.getFechaPronostico());
 				System.out.println("Condicion climatologica: " + dia.getEstadoClima());
 				System.out.println("Temperatura Mínima: " + dia.getTempMinima());
 				System.out.println("Temperatura Máxima: " + dia.getTempMaxima());
 				*/
-			}
+		
 			return pronostico;
 		} catch (Exception e) {
 			System.err.println("Problemas en el método procesarDatos de la clase PeticionesJSON");
-			throw e;
+			return null;
 		}
 	}
 

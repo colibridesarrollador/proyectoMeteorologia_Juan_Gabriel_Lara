@@ -2,16 +2,14 @@ package vista;
 
 import controlador.Controlador;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
-
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import java.awt.Color;
@@ -23,14 +21,11 @@ public class Vista extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	// private List <JLabel> labels ;
 	private JPanel panelEspania;
-	private JComboBox comboBoxCiudades;
-	private JLabel lblNewLabelFondoMapas;
+	private JLabel lblNewLabelFondoMapaEspania;
 
-	private ContenedorProvinciasEtiquetas contenedorLista;
-	private List<JLabel> bilbao;
-	private EtiquetasProvincias objetoLista;
+	private ContenedorProvinciasJLabels contenedorProvincias;
+	private ProvinciaJLabels provincia;
 	private List<JLabel> labels;
 	private JLabel lblNewLabelLasPalmas;
 	private JLabel lblNewLabelSantaCruzTenerife;
@@ -73,7 +68,6 @@ public class Vista extends JFrame {
 	private JLabel lblNewLabelViscaya;
 	private JLabel lblNewLabelMurcia;
 	private JLabel lblNewLabelPalencia;
-	private JComboBox comboBoxDia;
 	private JLabel lblNewLabelAlicante;
 	private JLabel lblNewLabelLaRioja;
 	private JLabel lblNewLabelOviedo;
@@ -84,18 +78,50 @@ public class Vista extends JFrame {
 	private JButton irAlMapa;
 	private JPanel panelInicio;
 	private JLabel lblNewLabelBilbao;
-	private JLabel lblNewLabelDonostia;
 	private JLabel lblNewLabelVitoria;
 	private JLabel lblNewLabelProvinciaSeleccionada;
-	private JLabel lblNewLabel_5;
 	private JLabel lblNewLabelMinVitoria;
-	private JLabel lblNewLabel_2;
 	private JLabel lblNewLabelMaxVictoria;
-	private JLabel lblNewLabelMinDonosti;
-	private JLabel lblNewLabelMaxDonosti;
 	private JLabel lblNewLabelMinBilbao;
 	private JLabel lblNewLabelMaxBilbao;
-	private JPanel panelProvincias;
+	private List<JLabel> componentes;
+	private JLabel lblNewLabelMinCorunia;
+	private JLabel lblNewLabelMaxOurense;
+	private JLabel lblMinOurense;
+	private JLabel lblNewLabelMaxLugo;
+	private JLabel lblNewLabelMinLugo;
+	private JLabel lblNewLabelOurense;
+	private JLabel lblNewLabelGalicia_img;
+	private JLabel lblNewLabelLugoLBL;
+	private JLabel lblNewLabel_2;
+	private JLabel labelMaxCorunia;
+	private JLabel lblNewLabelCorunia;
+	private JLabel lblNewLabelMinPontevedra;
+	private JLabel lblNewLabelMaxPontevedra;
+	private JLabel lblNewLabelPontevedra;
+	private JLabel corunia;
+	private JLabel pontevedra;
+	private JLabel maxPontevedra;
+	private JLabel minPontevedra;
+	private JLabel ourense;
+	private JLabel maxOurense;
+	private JLabel minOurense;
+	private JLabel lugo;
+	private JLabel maxLugo;
+	private JLabel minLugo;
+	private JLabel maxCorunia;
+	private JLabel minCorunia;
+	private JPanel panelGalicia;
+	private JLabel lblNewLabel_3;
+	private JLabel lblNewLabel_4;
+	private JLabel lblNewLabel_5;
+	private JLabel lblPontevedra;
+	private JPanel panelControles;
+	private JLabel lblNewLabel;
+	private JComboBox comboBoxComunidades;
+	private JComboBox comboBoxDia;
+	private JLabel fondoGalicia;
+	
 
 	/**
 	 * Launch the application.
@@ -118,14 +144,17 @@ public class Vista extends JFrame {
 	 * Create the frame.
 	 */
 	public Vista() {
-		this.contenedorLista = new ContenedorProvinciasEtiquetas();
-		objetoLista  = new EtiquetasProvincias("Bilbao");
+		
+		
+		this.componentes = new ArrayList<JLabel>();
+		this.contenedorProvincias = new ContenedorProvinciasJLabels();
 		this.labels = new ArrayList<JLabel>();
-		this.bilbao = new ArrayList<JLabel>();
-		ImageIcon fondo1 = new ImageIcon(getClass().getResource("/imagenes/fondo_inicio.jpg").getPath());
-
-		ImageIcon fondo = new ImageIcon(getClass().getResource("/imagenes/mapa_espania.jpg").getPath());
-		ImageIcon alava = new ImageIcon(getClass().getResource("/imagenes/alava.png").getPath());
+		ImageIcon inicio_img = new ImageIcon(getClass().getResource("/imagenes/fondo_inicio.jpg").getPath());
+		
+			
+		ImageIcon galicia_img = new ImageIcon(getClass().getResource("/imagenes/galicia.png").getPath());
+		ImageIcon espania_img = new ImageIcon(getClass().getResource("/imagenes/mapa_espania.jpg").getPath());
+		ImageIcon pais_vasco_img = new ImageIcon(getClass().getResource("/imagenes/alava.png").getPath());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 743, 725);
 		contentPane = new JPanel();
@@ -133,25 +162,97 @@ public class Vista extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-		panelInicio = new JPanel();
-		panelInicio.setLayout(null);
-		panelInicio.setBounds(0, 0, 729, 685);
-		contentPane.add(panelInicio);
-
-		irAlMapa = new JButton("Iniciar");
-		irAlMapa.setForeground(new Color(0, 0, 0));
-		irAlMapa.setFont(new Font("Tahoma", Font.BOLD, 16));
-		irAlMapa.setBounds(269, 328, 117, 48);
-		panelInicio.add(irAlMapa);
-
-		JLabel lblNewLabel_1 = new JLabel(fondo1);
-		lblNewLabel_1.setBounds(0, 10, 729, 675);
-		panelInicio.add(lblNewLabel_1);
-		//panelInicio.setVisible(false);
+		
+			
+	
+		panelGalicia = new JPanel();
+		panelGalicia.setBounds(0, 0, 729, 568);
+		contentPane.add(panelGalicia);
+		panelGalicia.setLayout(null);
+		panelGalicia.setVisible(false);
+		
+		corunia = new JLabel("A_Coruja");
+		corunia.setBounds(125, 158, 70, 56);
+		panelGalicia.add(corunia);
+		
+		pontevedra = new JLabel("Pontevedra");
+		pontevedra.setBounds(96, 407, 59, 56);
+		panelGalicia.add(pontevedra);
+		
+		maxPontevedra = new JLabel("New label");
+		maxPontevedra.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		maxPontevedra.setBounds(182, 391, 113, 13);
+		panelGalicia.add(maxPontevedra);
+		
+		minPontevedra = new JLabel("New label");
+		minPontevedra.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		minPontevedra.setBounds(183, 427, 84, 13);
+		panelGalicia.add(minPontevedra);
+		
+		ourense = new JLabel("Ourense");
+		ourense.setBounds(406, 460, 59, 56);
+		panelGalicia.add(ourense);
+		
+		maxOurense = new JLabel("New label");
+		maxOurense.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		maxOurense.setBounds(491, 469, 77, 13);
+		panelGalicia.add(maxOurense);
+		
+		minOurense = new JLabel("New label");
+		minOurense.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		minOurense.setBounds(491, 516, 90, 13);
+		panelGalicia.add(minOurense);
+		
+		lugo = new JLabel("Lugo");
+		lugo.setBounds(491, 158, 63, 56);
+		panelGalicia.add(lugo);
+		
+		maxLugo = new JLabel("New label");
+		maxLugo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		maxLugo.setBounds(578, 136, 77, 13);
+		panelGalicia.add(maxLugo);
+		
+		minLugo = new JLabel("New label");
+		minLugo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		minLugo.setBounds(578, 178, 77, 13);
+		panelGalicia.add(minLugo);
+		
+		maxCorunia = new JLabel("New label");
+		maxCorunia.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		maxCorunia.setBounds(205, 156, 77, 13);
+		panelGalicia.add(maxCorunia);
+		
+		minCorunia = new JLabel("New label");
+		minCorunia.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		minCorunia.setBounds(205, 190, 90, 13);
+		panelGalicia.add(minCorunia);
+		
+		lblNewLabel_3 = new JLabel("A Coruña");
+		lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_3.setBounds(133, 119, 84, 17);
+		panelGalicia.add(lblNewLabel_3);
+		
+		lblNewLabel_4 = new JLabel("Lugo");
+		lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_4.setBounds(513, 245, 59, 25);
+		panelGalicia.add(lblNewLabel_4);
+		
+		lblNewLabel_5 = new JLabel("Ourense");
+		lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_5.setBounds(397, 526, 84, 32);
+		panelGalicia.add(lblNewLabel_5);
+		
+		lblPontevedra = new JLabel("Pontevedra");
+		lblPontevedra.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblPontevedra.setBounds(162, 343, 90, 25);
+		panelGalicia.add(lblPontevedra);
+		
+		fondoGalicia = new JLabel(galicia_img);
+		fondoGalicia.setBounds(0, 0, 729, 568);
+		panelGalicia.add(fondoGalicia);
 		
 		panelEspania = new JPanel();
-		panelEspania.setBounds(0, 0, 729, 685);
+		panelEspania.setBounds(0, 0, 729, 568);
 		contentPane.add(panelEspania);
 		panelEspania.setLayout(null);
 		panelEspania.setVisible(false);
@@ -161,10 +262,6 @@ public class Vista extends JFrame {
 
 		labels.add(lblNewLabelCastellonDeLaPlana);
 		panelEspania.add(lblNewLabelCastellonDeLaPlana);
-
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 0, 2, 2);
-		panelEspania.add(scrollPane);
 
 		lblNewLabelAlicante = new JLabel("Alicante_Alacant");
 		lblNewLabelAlicante.setBounds(451, 325, 28, 23);
@@ -448,110 +545,124 @@ public class Vista extends JFrame {
 		labels.add(lblNewLabelMalaga);
 		panelEspania.add(lblNewLabelMalaga);
 
-		JLabel lblNewLabel = new JLabel("Ciudad: ");
-		lblNewLabel.setBounds(494, 546, 66, 15);
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		panelEspania.add(lblNewLabel);
+		lblNewLabelFondoMapaEspania = new JLabel(espania_img);
+		lblNewLabelFondoMapaEspania.setBackground(Color.WHITE);
+		lblNewLabelFondoMapaEspania.setBounds(20, 10, 709, 515);
+		panelEspania.add(lblNewLabelFondoMapaEspania);
 
-		comboBoxCiudades = new JComboBox();
-		comboBoxCiudades.setBackground(new Color(255, 255, 255));
-		comboBoxCiudades.setBounds(559, 540, 143, 21);
-		panelEspania.add(comboBoxCiudades);
+		panelInicio = new JPanel();
+		panelInicio.setLayout(null);
+		panelInicio.setBounds(0, 0, 729, 688);
+		contentPane.add(panelInicio);
 
-		lblNewLabelFondoMapas = new JLabel(fondo);
-		lblNewLabelFondoMapas.setBackground(Color.WHITE);
-		lblNewLabelFondoMapas.setBounds(20, 10, 709, 515);
-		panelEspania.add(lblNewLabelFondoMapas);
+		irAlMapa = new JButton("Iniciar");
+		irAlMapa.setForeground(new Color(0, 0, 0));
+		irAlMapa.setFont(new Font("Tahoma", Font.BOLD, 16));
+		irAlMapa.setBounds(269, 328, 117, 48);
+		panelInicio.add(irAlMapa);
 
-		comboBoxDia = new JComboBox();
-		comboBoxDia.setBounds(386, 540, 77, 21);
-		panelEspania.add(comboBoxDia);
-
-		JLabel lblNewLabel_4 = new JLabel("Día:");
-		lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_4.setBounds(347, 546, 44, 15);
-		panelEspania.add(lblNewLabel_4);
-
-		panelProvincias = new JPanel();
-		panelProvincias.setBounds(0, 0, 729, 685);
-		contentPane.add(panelProvincias);
-		panelProvincias.setLayout(null);
-
-		lblNewLabelMaxVictoria = new JLabel("max");
-		lblNewLabelMaxVictoria.setBounds(285, 343, 45, 13);
-		//bilbao.add(lblNewLabelMaxVictoria);
-		//panelProvincias.add(lblNewLabelMaxVictoria);
-
-		lblNewLabelMinDonosti = new JLabel("New label");
-		lblNewLabelMinDonosti.setBounds(498, 235, 45, 13);
-		//bilbao.add(lblNewLabelMinDonosti);
-		// panelProvincias.add(lblNewLabelMinDonosti);
-
-		lblNewLabelMaxDonosti = new JLabel("New label");
-		lblNewLabelMaxDonosti.setBounds(498, 198, 45, 13);
-		//bilbao.add(lblNewLabelMinDonosti);
-		// panelProvincias.add(lblNewLabelMaxDonosti);
-
-		lblNewLabelMinBilbao = new JLabel("min");
-		lblNewLabelMinBilbao.setBounds(307, 165, 45, 13);
-		bilbao.add(lblNewLabelMinBilbao);
-		//panelProvincias.add(lblNewLabelMinBilbao);
-
-		lblNewLabelMaxBilbao = new JLabel("max");
-		lblNewLabelMaxBilbao.setBounds(303, 134, 45, 13);
-		bilbao.add(lblNewLabelMaxBilbao);
-		//panelProvincias.add(lblNewLabelMaxBilbao);
-
-		lblNewLabelMinVitoria = new JLabel("min");
-		lblNewLabelMinVitoria.setBounds(285, 377, 45, 19);
-		//bilbao.add(lblNewLabelMinVitoria);
-		//panelProvincias.add(lblNewLabelMinVitoria);
-
-		lblNewLabelDonostia = new JLabel("Donostia_San_Sebastian");
-		lblNewLabelDonostia.setBounds(422, 211, 60, 60);
-		//bilbao.add(lblNewLabelDonostia);
-		// panelProvincias.add(lblNewLabelDonostia);
-
-		lblNewLabelVitoria = new JLabel("Vitoria-Gasteiz");
-		lblNewLabelVitoria.setBounds(203, 336, 60, 60);
-		//bilbao.add(lblNewLabelVitoria);
-		// panelProvincias.add(lblNewLabelVitoria);
-
-		lblNewLabelBilbao = new JLabel("Bilbao");
-		lblNewLabelBilbao.setBounds(237, 141, 60, 60);
-		bilbao.add(lblNewLabelBilbao);
-		// panelProvincias.add(lblNewLabelBilbao);
-
-		lblNewLabel_5 = new JLabel(alava);
-		lblNewLabel_5.setBounds(10, 81, 693, 482);
-		panelProvincias.add(lblNewLabel_5);
-
-		lblNewLabelProvinciaSeleccionada = new JLabel("Provincia Seleccionada");
-		lblNewLabelProvinciaSeleccionada.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabelProvinciaSeleccionada.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblNewLabelProvinciaSeleccionada.setBounds(203, 24, 228, 47);
-		panelProvincias.add(lblNewLabelProvinciaSeleccionada);
-
-		lblNewLabel_2 = new JLabel("New label");
-		lblNewLabel_2.setBounds(285, 354, 45, 13);
-		panelProvincias.add(lblNewLabel_2);
-		panelProvincias.setVisible(false);
-	
-	
+		JLabel lblNewLabel_1 = new JLabel(inicio_img);
+		lblNewLabel_1.setBounds(0, 10, 729, 679);
+		panelInicio.add(lblNewLabel_1);
 		
-		contenedorLista.getListas().add(objetoLista);
+		panelControles = new JPanel();
+		panelControles.setBounds(0, 610, 729, 78);
+		contentPane.add(panelControles);
+		panelControles.setLayout(null);
+		panelControles.setVisible(false);
+		
+		lblNewLabel = new JLabel("Comunidades: ");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel.setBounds(406, 22, 119, 24);
+		panelControles.add(lblNewLabel);
+		
+		comboBoxComunidades = new JComboBox();
+		comboBoxComunidades.setBackground(new Color(255, 255, 255));
+		comboBoxComunidades.setForeground(new Color(0, 0, 0));
+		comboBoxComunidades.setBounds(522, 22, 197, 21);
+		panelControles.add(comboBoxComunidades);
+		
+		comboBoxDia = new JComboBox();
+		comboBoxDia.setBackground(new Color(255, 255, 255));
+		comboBoxDia.setForeground(new Color(0, 0, 0));
+		comboBoxDia.setBounds(258, 26, 98, 21);
+		panelControles.add(comboBoxDia);
+		
+		JLabel lblNewLabel_6 = new JLabel("Fecha: ");
+		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_6.setBounds(188, 24, 59, 21);
+		panelControles.add(lblNewLabel_6);
+
+	}
+	
+
+	public JComboBox getComboBoxComunidades() {
+		return comboBoxComunidades;
 	}
 
-	
-	
-	public ContenedorProvinciasEtiquetas getContenedor() {
-		return contenedorLista;
+	public JComboBox getComboBoxDia() {
+		return comboBoxDia;
 	}
 
-	
+	public JPanel getPanelGalicia() {
+		return panelGalicia;
+	}
+
+	public JLabel getMaxCorunia() {
+		return maxCorunia;
+	}
+
+	public JLabel getMinCorunia() {
+		return minCorunia;
+	}
+
+	public JLabel getPontevedra() {
+		return pontevedra;
+	}
+
+	public JLabel getMaxPontevedra() {
+		return maxPontevedra;
+	}
+
+	public JLabel getMinPontevedra() {
+		return minPontevedra;
+	}
+
+	public JLabel getOurense() {
+		return ourense;
+	}
+
+	public JLabel getMaxOurense() {
+		return maxOurense;
+	}
+
+	public JLabel getMinOurense() {
+		return minOurense;
+	}
+
+	public JLabel getLugo() {
+		return lugo;
+	}
+
+	public JLabel getMaxLugo() {
+		return maxLugo;
+	}
+
+	public JLabel getMinLugo() {
+		return minLugo;
+	}
+
+	public ContenedorProvinciasJLabels getContenedorLista() {
+		return contenedorProvincias;
+	}
 
 	public JLabel getLblNewLabelProvinciaSeleccionada() {
 		return lblNewLabelProvinciaSeleccionada;
+	}
+
+
+	public JLabel getCorunia() {
+		return corunia;
 	}
 
 	public JButton getIrAlMapa() {
@@ -566,48 +677,17 @@ public class Vista extends JFrame {
 		return labels;
 	}
 
-	public JComboBox getComboBoxDia() {
-		return comboBoxDia;
-	}
-
 	public JLabel getLblNewLabelFondoMapas() {
-		return lblNewLabelFondoMapas;
+		return lblNewLabelFondoMapaEspania;
 	}
 
 	
-	public JPanel getPanelProvincias() {
-		return panelProvincias;
-	}
 
-	public JComboBox getComboBoxCiudades() {
-		return comboBoxCiudades;
-	}
-
-	public JPanel getContentPane() {
-		return contentPane;
+	public JPanel getPanelControles() {
+		return panelControles;
 	}
 
 	public JPanel getPanelEspania() {
 		return panelEspania;
 	}
-	
-	public void mostrarProvincia(List<JLabel> etiquetas) {
-		for (JLabel jLabel : etiquetas) {
-			panelProvincias.add(jLabel);
-		}
-	}
-
-	public void mostrarMapaEspania() {
-
-		for (JLabel jLabel : this.labels) {
-			panelEspania.add(jLabel);
-		}
-	}
-	public void refrescarEpania() {
-		panelEspania.repaint();
-		panelEspania.revalidate();
-	}
-
-	
-	
 }
