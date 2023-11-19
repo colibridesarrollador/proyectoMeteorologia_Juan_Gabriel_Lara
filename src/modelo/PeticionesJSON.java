@@ -57,7 +57,7 @@ public class PeticionesJSON {
 		String idCiudad = mapeoCiudades.get(nombreCiudad);
 
 		if (idCiudad == null) {
-			System.out.println("No se encontró el identificador de la ciudad para el nombre proporcionado: "+nombreCiudad);
+			//System.out.println("No se encontró el identificador de la ciudad para el nombre proporcionado: "+nombreCiudad);
 			return null;
 		}
 
