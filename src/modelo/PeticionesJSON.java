@@ -71,7 +71,7 @@ public class PeticionesJSON {
 			// Obtener información de la ciudad
 			String ciudad = jsonNode.path("city").path("cityName").asText();
 			pronostico.setNombreCiudad(ciudad);
-			
+			System.out.println("Procesando "+ciudad+"....");
 			// Obtener el nodo "forecastDay" que contiene el pronóstico para varios días
 			JsonNode forecastDays = jsonNode.path("city").path("forecast").path("forecastDay");
 
