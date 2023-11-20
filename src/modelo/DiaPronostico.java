@@ -5,18 +5,11 @@ import javax.swing.JLabel;
 public class DiaPronostico {
 
    
-    private String fechaPronostico;
+   
     private String estadoClima;
     private String tempMinima;
     private String tempMaxima;
-    private JLabel labels;
-    private String peticionesClima;
-
-    
-    
-	public void setFechaPronostico(String fechaPronostico) {
-		this.fechaPronostico = fechaPronostico;
-	}
+   
 
 	public void setEstadoClima(String estadoClima) {
 		this.estadoClima = estadoClima;
@@ -30,10 +23,6 @@ public class DiaPronostico {
 		this.tempMaxima = tempMaxima;
 	}
 
-	public String getFechaPronostico() {
-        return fechaPronostico;
-    }
-
     public String getEstadoClima() {
         return estadoClima;
     }
@@ -46,13 +35,5 @@ public class DiaPronostico {
     public String getTempMaxima() {
         return tempMaxima;
     }
-
-	public JLabel getLabels() {
-		return labels;
-	}
-
-	public void setLabels(JLabel labels) {
-		this.labels = labels;
-	}
     
 }

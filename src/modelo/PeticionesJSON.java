@@ -23,6 +23,7 @@ public class PeticionesJSON {
 	private Properties properties;
 	private DiaPronostico dia;
 	private Pronostico dias;
+	
 
 	public PeticionesJSON() {
 		this.LeerProperties();
@@ -49,15 +50,14 @@ public class PeticionesJSON {
 		return mapeo;
 	}
 
-	public Pronostico hacerPeticion(String nombreCiudad)  {
+	public DiaPronostico hacerPeticion(String nombreCiudad,int dia)  {
 
-		DiaPronostico dia = new DiaPronostico();
-		Pronostico pronostico = new Pronostico();
-
+		DiaPronostico diaPronosticado = new DiaPronostico();
+		
 		String idCiudad = mapeoCiudades.get(nombreCiudad);
 
 		if (idCiudad == null) {
-			//System.out.println("No se encontró el identificador de la ciudad para el nombre proporcionado: "+nombreCiudad);
+			System.out.println("No se encontró el identificador de la ciudad para el nombre proporcionado: "+nombreCiudad);
 			return null;
 		}
 
@@ -70,38 +70,21 @@ public class PeticionesJSON {
 
 			// Obtener información de la ciudad
 			String ciudad = jsonNode.path("city").path("cityName").asText();
-			pronostico.setNombreCiudad(ciudad);
 			System.out.println("Procesando "+ciudad+"....");
+			
 			// Obtener el nodo "forecastDay" que contiene el pronóstico para varios días
 			JsonNode forecastDays = jsonNode.path("city").path("forecast").path("forecastDay");
-
-			// Iterar sobre los próximos 4 días
 			
-			for(int i = 0; i < 4; i++) {
+			
+				//recoge el día iésiomo del JSON
+				JsonNode diaPronostico = forecastDays.get(dia);
 				
-				JsonNode diaPronostico = forecastDays.get(i);
-				//System.out.println(nombreCiudad);
-				
-					dia.setFechaPronostico(diaPronostico.path("forecastDate").asText());
-
-					dia.setEstadoClima(diaPronostico.path("weather").asText());
-
-					dia.setTempMinima(diaPronostico.path("minTemp").asText());
-
-					dia.setTempMaxima(diaPronostico.path("maxTemp").asText());
-
-					pronostico.getDias().add(dia);
-					
-					
-				}
-				/*
-				System.out.println("Fecha: " + dia.getFechaPronostico());
-				System.out.println("Condicion climatologica: " + dia.getEstadoClima());
-				System.out.println("Temperatura Mínima: " + dia.getTempMinima());
-				System.out.println("Temperatura Máxima: " + dia.getTempMaxima());
-				*/
+				diaPronosticado.setEstadoClima(diaPronostico.path("weather").asText());
+				diaPronosticado.setTempMinima(diaPronostico.path("minTemp").asText());
+				diaPronosticado.setTempMaxima(diaPronostico.path("maxTemp").asText());
+	
 		
-			return pronostico;
+			return diaPronosticado;
 		} catch (Exception e) {
 			System.err.println("Problemas en el método procesarDatos de la clase PeticionesJSON");
 			return null;
