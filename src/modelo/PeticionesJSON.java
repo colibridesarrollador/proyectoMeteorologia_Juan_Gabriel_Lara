@@ -21,8 +21,8 @@ public class PeticionesJSON {
 	private static final String EXTENSION_API = "_es.xml";
 	private final Map<String, String> mapeoCiudades;
 	private Properties properties;
-	private DiaPronostico dia;
-	private Pronostico dias;
+	
+	
 	
 
 	public PeticionesJSON() {
@@ -36,7 +36,6 @@ public class PeticionesJSON {
 			properties.load(reader);
 		} catch (IOException e) {
 			System.err.println("Error al cargar el archivo de propiedades: " + e.getMessage());
-			System.exit(1);
 		}
 	}
 	
@@ -96,14 +95,25 @@ public class PeticionesJSON {
 		HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
 		conexion.setRequestMethod("GET");
 
+		
 		// Seguir redirecciones con un límite
+		// Inicializamos un contador para el número de redirecciones
 		int contadorRedirecciones = 0;
-		while (conexion.getResponseCode() / 100 == 3 && contadorRedirecciones < 5) {
-			String nuevaUrl = conexion.getHeaderField("Location");
-			conexion = (HttpURLConnection) new URL(nuevaUrl).openConnection();
-			contadorRedirecciones++;
-		}
 
+	
+		// Mientras el código de respuesta indique una redirección (código en el rango 300-399)
+		// y no hayamos alcanzado el límite de redirecciones (5 en este caso)
+		while (conexion.getResponseCode() / 100 == 3 && contadorRedirecciones < 5) {
+		    // Obtenemos la nueva URL a la que se está redirigiendo
+		    String nuevaUrl = conexion.getHeaderField("Location");
+		    	
+		    // Abrimos una nueva conexión a la URL redirigida
+		    conexion = (HttpURLConnection) new URL(nuevaUrl).openConnection();
+
+		    // Incrementamos el contador de redirecciones
+		    contadorRedirecciones++;
+		}
+		
 		// Leer la respuesta
 		try (BufferedReader lector = new BufferedReader(
 				new InputStreamReader(conexion.getInputStream(), StandardCharsets.UTF_8))) {
