@@ -29,7 +29,7 @@ public class PeticionesJSON {
 		this.LeerProperties();
 		this.mapeoCiudades = cargarMapeoDesdeProperties();
 	}
-
+	// Método para leer el archivo properties
 	private void LeerProperties() {
 		this.properties = new Properties();
 		try (InputStreamReader reader = new InputStreamReader(PeticionesJSON.class.getClassLoader().getResourceAsStream("resources/config.properties"),StandardCharsets.UTF_8)) {
@@ -39,7 +39,7 @@ public class PeticionesJSON {
 		}
 	}
 	
-
+	// Método para almacenar el mapeo desde el archivo de propiedades
 	private Map<String, String> cargarMapeoDesdeProperties() {
 		Map<String, String> mapeo = new HashMap<>();
 		for (String nombreCiudad : properties.stringPropertyNames()) {
@@ -49,6 +49,7 @@ public class PeticionesJSON {
 		return mapeo;
 	}
 
+	// Método principal para hacer la petición al servidor y procesar la respuesta JSON
 	public DiaPronostico hacerPeticion(String nombreCiudad,int dia)  {
 
 		DiaPronostico diaPronosticado = new DiaPronostico();
@@ -89,7 +90,7 @@ public class PeticionesJSON {
 			return null;
 		}
 	}
-
+	// Método para descargar el JSON desde la URL proporcionada
 	private String descargarJson(String urlApi) throws IOException {
 		URL url = new URL(urlApi);
 		HttpURLConnection conexion = (HttpURLConnection) url.openConnection();

@@ -26,6 +26,7 @@ import modelo.PeticionesJSON;
 
 public class Controlador implements ActionListener {
 
+	 // Declaración de constantes para rutas de imágenes
 	private final String NUBE_SOL = "/imagenes/nube_sol.png";
 	private final String NUBE_TORMENTA = "/imagenes/nube_tormenta.png";
 	private final String NUBE_NIEVE = "/imagenes/nube_nieve.png";
@@ -37,6 +38,7 @@ public class Controlador implements ActionListener {
 	private final String VIENTO = "/imagenes/viento.png";
 	private final String SOL = "/imagenes/sol.png";
 	private final String FRIO = "/imagenes/frio.png";
+	// Mapa que asocia condiciones climáticas con rutas de imágenes
 	private Map<String, String> CLIMA_IMAGENES;
 	private String penultimaComunidad;
 	private List<String> ciudades;
@@ -51,7 +53,8 @@ public class Controlador implements ActionListener {
 	private String comunidadActual;
 
 	public Controlador(Vista vista) {
-
+		
+		// Inicialización de variables en el constructor
 		this.vista = vista;
 		CLIMA_IMAGENES = new HashMap<>();
 		respuesta = new PeticionesJSON();
@@ -71,7 +74,7 @@ public class Controlador implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		// Manejo de eventos de la interfaz
 		if (e.getSource() == vista.getIrAlMapa()) {
 
 			mostrarMapaEspaniaPrimeraVez();
@@ -333,7 +336,7 @@ public class Controlador implements ActionListener {
 			}
 		}
 	}
-
+	 // Método para pintar un icono en una etiqueta según la condición climática
 	private void pintarIcono(JLabel label, String clima) {
 		String imagePath = CLIMA_IMAGENES.get(clima.toLowerCase());
 		ImageIcon icono = new ImageIcon(getClass().getResource(imagePath));
@@ -346,7 +349,7 @@ public class Controlador implements ActionListener {
 			System.err.println("Error al cargar la imagen: ImageIcon es nulo.");
 		}
 	}
-
+	// Método para refrescar los textos originales en las etiquetas según la comunidad
 	public void refrescarTextosOriginalesJLabels(String comunidad) {
 
 		switch (comunidad) {
@@ -372,7 +375,7 @@ public class Controlador implements ActionListener {
 			Vista.restaurarTextosOriginales(vista.getAsturias());
 			break;
 		case "Cataluña":
-			Vista.restaurarTextosOriginales(vista.getAsturias());
+			Vista.restaurarTextosOriginales(vista.getCatalunia());
 			break;
 		case "Comunidad Valenciana":
 			Vista.restaurarTextosOriginales(vista.getValencia());
@@ -482,7 +485,8 @@ public class Controlador implements ActionListener {
 
 		return ciudadesNombre;
 	}
-
+	
+	// Método para cargar el mapa de imágenes y condiciones climáticas
 	private void cargarHashMapImagene() {
 
 		CLIMA_IMAGENES.put("intervalos de sol", NUBE_SOL);
@@ -554,7 +558,7 @@ public class Controlador implements ActionListener {
 		CLIMA_IMAGENES.put("frío", FRIO);
 		CLIMA_IMAGENES.put("fresco", FRIO);
 	}
-
+	// Método para cargar comunidades (ordenar alfabéticamente)
 	public List<String> comunidades() {
 
 		List<String> comunidades = new ArrayList<String>();
